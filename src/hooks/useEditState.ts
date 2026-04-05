@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { EditState, Version, DEFAULT_EDIT_STATE } from '../types'
 
 interface UseEditStateReturn {
@@ -11,13 +11,20 @@ interface UseEditStateReturn {
 }
 
 export function useEditState(): UseEditStateReturn {
-  const [, rerender] = useState(0)
-  const stateRef = useRef<EditState>(DEFAULT_EDIT_STATE)
-  const versionsRef = useRef<Version[]>([])
+  const [state, setStateInternal] = useState<EditState>(DEFAULT_EDIT_STATE)
+  const [versions, setVersions] = useState<Version[]>([])
+  const stateRef = useRef(state)
+
+  useEffect(() => {
+    stateRef.current = state
+  }, [state])
 
   const setState = useCallback((partial: Partial<EditState>) => {
-    stateRef.current = { ...stateRef.current, ...partial }
-    rerender(n => n + 1)
+    setStateInternal(prev => {
+      const next = { ...prev, ...partial }
+      stateRef.current = next
+      return next
+    })
   }, [])
 
   const addVersion = useCallback((thumbnail: string) => {
@@ -26,33 +33,24 @@ export function useEditState(): UseEditStateReturn {
       thumbnail,
       state: { ...stateRef.current },
     }
-    const next = [newVersion, ...versionsRef.current]
-    versionsRef.current = next.length > 20 ? next.slice(1) : next
-    rerender(n => n + 1)
+    setVersions(prev => {
+      const next = [newVersion, ...prev]
+      return next.length > 20 ? next.slice(0, 20) : next
+    })
   }, [])
 
   const restoreVersion = useCallback((id: string) => {
-    const found = versionsRef.current.find(v => v.id === id)
-    if (found) {
-      stateRef.current = { ...found.state }
-      rerender(n => n + 1)
-    }
+    setVersions(prev => {
+      const found = prev.find(v => v.id === id)
+      if (found) setStateInternal({ ...found.state })
+      return prev
+    })
   }, [])
 
   const resetState = useCallback(() => {
-    stateRef.current = DEFAULT_EDIT_STATE
-    versionsRef.current = []
-    rerender(n => n + 1)
+    setStateInternal({ ...DEFAULT_EDIT_STATE })
+    setVersions([])
   }, [])
 
-  const result: UseEditStateReturn = {
-    get state() { return stateRef.current },
-    get versions() { return versionsRef.current },
-    setState,
-    addVersion,
-    restoreVersion,
-    resetState,
-  }
-
-  return result
+  return { state, setState, versions, addVersion, restoreVersion, resetState }
 }

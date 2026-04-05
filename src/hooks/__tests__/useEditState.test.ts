@@ -35,17 +35,32 @@ describe('useEditState', () => {
       }
     })
     expect(result.current.versions).toHaveLength(20)
-    expect(result.current.versions[19].thumbnail).toBe('data:image/png;base64,v0')
+    // newest (v20) is at index 0 after prepend
+    expect(result.current.versions[0].thumbnail).toBe('data:image/png;base64,v20')
+    // oldest (v0) was dropped
+    expect(result.current.versions.find(v => v.thumbnail === 'data:image/png;base64,v0')).toBeUndefined()
+  })
+
+  it('addVersion drops the oldest item — not the just-added one', () => {
+    const { result } = renderHook(() => useEditState())
+    act(() => {
+      for (let i = 0; i < 21; i++) {
+        result.current.addVersion(`data:image/png;base64,v${i}`)
+      }
+    })
+    // With prepend + slice(0,20): v20 (most recent) is at index 0
+    // v0 (oldest, index 20 before slice) is dropped
+    expect(result.current.versions[0].thumbnail).toBe('data:image/png;base64,v20')
+    expect(result.current.versions).toHaveLength(20)
   })
 
   it('restoreVersion sets state to the version snapshot', () => {
     const { result } = renderHook(() => useEditState())
-    let versionId: string
     act(() => {
       result.current.setState({ rotation: 30 })
       result.current.addVersion('data:image/png;base64,snap')
-      versionId = result.current.versions[0].id
     })
+    const versionId = result.current.versions[0].id
     act(() => {
       result.current.setState({ rotation: 99 })
     })
