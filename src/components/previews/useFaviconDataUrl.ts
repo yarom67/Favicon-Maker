@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import type { EditState } from '../../types'
 import { applyEdits } from '../../lib/applyEdits'
 import { rasterizeSvg } from '../../lib/svgRasterizer'
 
 export function useFaviconDataUrl(state: EditState, size: number): string | null {
   const [dataUrl, setDataUrl] = useState<string | null>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!state.imageType) {
@@ -12,9 +13,12 @@ export function useFaviconDataUrl(state: EditState, size: number): string | null
       return
     }
 
+    // Debounce: wait 150ms after last change before rendering
+    if (timerRef.current) clearTimeout(timerRef.current)
+
     let cancelled = false
 
-    async function render() {
+    timerRef.current = setTimeout(async () => {
       let imageEl: HTMLImageElement | HTMLCanvasElement
 
       try {
@@ -40,10 +44,12 @@ export function useFaviconDataUrl(state: EditState, size: number): string | null
       const ctx = canvas.getContext('2d')!
       applyEdits(ctx, imageEl, state, size)
       setDataUrl(canvas.toDataURL('image/png'))
-    }
+    }, 150)
 
-    render()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
   }, [state, size])
 
   return dataUrl

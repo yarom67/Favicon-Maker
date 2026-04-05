@@ -23,6 +23,32 @@ function getImageDimensions(dataUrl: string): Promise<{ width: number; height: n
   })
 }
 
+function parseSvgDimensions(svgString: string): { width: number; height: number } {
+  try {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(svgString, 'image/svg+xml')
+    const svg = doc.querySelector('svg')
+    if (!svg) return { width: 512, height: 512 }
+
+    // Try width/height attributes first
+    const w = parseFloat(svg.getAttribute('width') || '0')
+    const h = parseFloat(svg.getAttribute('height') || '0')
+    if (w > 0 && h > 0) return { width: w, height: h }
+
+    // Fall back to viewBox
+    const viewBox = svg.getAttribute('viewBox')
+    if (viewBox) {
+      const parts = viewBox.trim().split(/[\s,]+/)
+      const vw = parseFloat(parts[2])
+      const vh = parseFloat(parts[3])
+      if (vw > 0 && vh > 0) return { width: vw, height: vh }
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return { width: 512, height: 512 }
+}
+
 export function UploadZone({ onImageLoaded }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -38,12 +64,13 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
 
     if (type === 'image/svg+xml') {
       const text = await file.text()
+      const { width, height } = parseSvgDimensions(text)
       onImageLoaded({
         imageType: 'svg',
         imageDataUrl: null,
         svgString: text,
-        imgWidth: 512,
-        imgHeight: 512,
+        imgWidth: width,
+        imgHeight: height,
         bgColor: '',
       })
       return

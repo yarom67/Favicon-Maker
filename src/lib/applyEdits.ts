@@ -7,12 +7,13 @@ function applyClipPath(
   size: number,
   mask: EditState['shapeMask']
 ): void {
-  ctx.beginPath()
   if (mask === 'square') {
+    ctx.beginPath()
     ctx.rect(0, 0, size, size)
     ctx.clip()
   } else if (mask === 'rounded') {
     const r = size * 0.2
+    ctx.beginPath()
     ;(ctx as any).roundRect(0, 0, size, size, r)
     ctx.clip()
   } else if (mask === 'circle') {
