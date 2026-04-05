@@ -1,0 +1,245 @@
+<style>
+  .dir-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 24px;
+  }
+  .dir-card {
+    border: 2px solid transparent;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #1a1a2e;
+  }
+  .dir-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .dir-card.selected { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.3); }
+  .dir-card .preview {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .dir-card .info {
+    padding: 16px;
+    background: rgba(255,255,255,0.05);
+  }
+  .dir-card .info h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; }
+  .dir-card .info p { margin: 0; font-size: 13px; opacity: 0.6; line-height: 1.4; }
+
+  /* Direction A — Dark & Modern */
+  .dir-a .preview {
+    background: linear-gradient(135deg, #0f0f1a 0%, #1a1a35 100%);
+  }
+  .dir-a-mockup {
+    text-align: center;
+  }
+  .dir-a-logo {
+    font-family: 'Sora', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #818cf8;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+  .dir-a-btn {
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: white;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .dir-a-upload {
+    width: 130px;
+    height: 70px;
+    border: 2px dashed rgba(99,102,241,0.5);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    margin: 0 auto;
+  }
+
+  /* Direction B — Light & Airy */
+  .dir-b .preview {
+    background: linear-gradient(135deg, #fafafa 0%, #f0f4ff 100%);
+  }
+  .dir-b-mockup { text-align: center; }
+  .dir-b-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 12px;
+  }
+  .dir-b-btn {
+    background: #1e293b;
+    color: white;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .dir-b-upload {
+    width: 130px;
+    height: 70px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #94a3b8;
+    background: white;
+    margin: 0 auto;
+  }
+
+  /* Direction C — Warm & Playful */
+  .dir-c .preview {
+    background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+  }
+  .dir-c-mockup { text-align: center; }
+  .dir-c-logo {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: #92400e;
+    margin-bottom: 12px;
+  }
+  .dir-c-btn {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: white;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .dir-c-upload {
+    width: 130px;
+    height: 70px;
+    border: 2px dashed #fcd34d;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #b45309;
+    background: rgba(255,255,255,0.6);
+    margin: 0 auto;
+  }
+
+  /* Direction D — Minimal & Typographic */
+  .dir-d .preview {
+    background: #f8f8f6;
+  }
+  .dir-d-mockup { text-align: center; }
+  .dir-d-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #111;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .dir-d-btn {
+    background: #111;
+    color: white;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 3px;
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+  .dir-d-upload {
+    width: 130px;
+    height: 70px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #6b7280;
+    background: white;
+    margin: 0 auto;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700&family=Plus+Jakarta+Sans:wght@800&family=DM+Serif+Display&display=swap');
+</style>
+
+<h2>Which design direction feels right?</h2>
+<p class="subtitle">Pick the vibe that best matches the product you're building. This sets the color palette, font personality, and overall feel.</p>
+
+<div class="dir-cards">
+
+  <div class="dir-card dir-a" data-choice="a" onclick="toggleSelect(this)">
+    <div class="preview">
+      <div class="dir-a-mockup">
+        <div class="dir-a-logo">✦ favicon.io</div>
+        <div class="dir-a-upload">Drop image here</div>
+        <div style="margin-top:10px"><div class="dir-a-btn">Export ZIP ↓</div></div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>A — Dark & Modern</h3>
+      <p>Deep navy/indigo background, glowing purple accents, Sora typeface. Feels like a premium dev tool. Confident and focused.</p>
+    </div>
+  </div>
+
+  <div class="dir-card dir-b" data-choice="b" onclick="toggleSelect(this)">
+    <div class="preview">
+      <div class="dir-b-mockup">
+        <div class="dir-b-logo">Favicon Maker</div>
+        <div class="dir-b-upload">Drop image here</div>
+        <div style="margin-top:10px"><div class="dir-b-btn">Export ZIP ↓</div></div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>B — Light & Professional</h3>
+      <p>Clean white/soft blue, dark slate accents, Fraunces serif display. Refined and trustworthy. Feels like a well-made SaaS product.</p>
+    </div>
+  </div>
+
+  <div class="dir-card dir-c" data-choice="c" onclick="toggleSelect(this)">
+    <div class="preview">
+      <div class="dir-c-mockup">
+        <div class="dir-c-logo">Favicon Maker</div>
+        <div class="dir-c-upload">Drop image here</div>
+        <div style="margin-top:10px"><div class="dir-c-btn">Export ZIP ↓</div></div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>C — Warm & Playful</h3>
+      <p>Warm cream/amber, orange-to-gold accents, Plus Jakarta Sans. Energetic but not childish. Friendly and creative.</p>
+    </div>
+  </div>
+
+  <div class="dir-card dir-d" data-choice="d" onclick="toggleSelect(this)">
+    <div class="preview">
+      <div class="dir-d-mockup">
+        <div class="dir-d-logo">Favicon Maker</div>
+        <div class="dir-d-upload">Drop image here</div>
+        <div style="margin-top:10px"><div class="dir-d-btn">Export ZIP ↓</div></div>
+      </div>
+    </div>
+    <div class="info">
+      <h3>D — Minimal & Typographic</h3>
+      <p>Off-white/neutral, pure black accents, DM Serif Display. Editorial, calm, and distinctive. Lets the user's content take center stage.</p>
+    </div>
+  </div>
+
+</div>
