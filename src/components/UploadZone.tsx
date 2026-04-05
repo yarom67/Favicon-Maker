@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react'
-import { ImageType } from '../types'
+import type { ImageType } from '../types'
 
 interface ImageLoadedPayload {
   imageType: ImageType

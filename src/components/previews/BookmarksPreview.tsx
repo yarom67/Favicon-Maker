@@ -1,4 +1,4 @@
-import { EditState } from '../../types'
+import type { EditState } from '../../types'
 import { useFaviconDataUrl } from './useFaviconDataUrl'
 
 export function BookmarksPreview({ state }: { state: EditState }) {

@@ -1,4 +1,4 @@
-import { EditState } from '../types'
+import type { EditState } from '../types'
 
 const EDITOR_SIZE = 400
 

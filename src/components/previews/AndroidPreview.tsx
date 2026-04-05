@@ -1,4 +1,4 @@
-import { EditState } from '../../types'
+import type { EditState } from '../../types'
 import { useFaviconDataUrl } from './useFaviconDataUrl'
 
 const PLACEHOLDER_ICONS = [

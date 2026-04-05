@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EditState } from '../types'
+import type { EditState } from '../types'
 import { buildFaviconZip } from '../lib/zipBuilder'
 
 interface ExportButtonProps {

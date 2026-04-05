@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { EditState } from '../../types'
+import type { EditState } from '../../types'
 import { applyEdits } from '../../lib/applyEdits'
 import { rasterizeSvg } from '../../lib/svgRasterizer'
 

@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
-import { EditState } from '../types'
+import type { EditState } from '../types'
 import { applyEdits } from './applyEdits'
 import { rasterizeSvg } from './svgRasterizer'
 import { generateIco } from './icoGenerator'

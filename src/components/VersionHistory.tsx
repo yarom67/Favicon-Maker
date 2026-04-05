@@ -1,4 +1,4 @@
-import { Version } from '../types'
+import type { Version } from '../types'
 
 interface VersionHistoryProps {
   versions: Version[]
