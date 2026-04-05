@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from 'react'
 import { Stage, Layer, Rect, Image as KonvaImage, Group } from 'react-konva'
 import Konva from 'konva'
-import { EditState } from '../types'
+import type { EditState } from '../types'
 import { rasterizeSvg } from '../lib/svgRasterizer'
 
 export const EDITOR_SIZE = 400

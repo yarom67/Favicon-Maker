@@ -37,14 +37,15 @@ describe('rasterizeSvg', () => {
     vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
       const el = origCreateElement(tag)
       if (tag === 'canvas') {
-        const origGetContext = el.getContext.bind(el)
-        ;(el as HTMLCanvasElement).getContext = (contextId: string, ...args: unknown[]) => {
+        const canvasEl = el as HTMLCanvasElement
+        const origGetContext = canvasEl.getContext.bind(canvasEl)
+        canvasEl.getContext = ((contextId: string, ...args: unknown[]) => {
           const ctx = origGetContext(contextId as '2d', ...(args as [])) as CanvasRenderingContext2D | null
           if (ctx && contextId === '2d') {
             ctx.drawImage = vi.fn() as unknown as typeof ctx.drawImage
           }
           return ctx
-        }
+        }) as typeof canvasEl.getContext
       }
       return el
     })

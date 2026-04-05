@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import { VersionHistory } from '../VersionHistory'
-import { Version, DEFAULT_EDIT_STATE } from '../../types'
+import { DEFAULT_EDIT_STATE } from '../../types'
+import type { Version } from '../../types'
 
 const mockVersions: Version[] = [
   { id: 'v1', thumbnail: 'data:image/png;base64,abc', state: { ...DEFAULT_EDIT_STATE, rotation: 45 } },

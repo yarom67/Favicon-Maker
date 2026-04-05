@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { EditState, ShapeMask } from '../types'
+import type { EditState, ShapeMask } from '../types'
 
 interface ControlsProps {
   state: EditState

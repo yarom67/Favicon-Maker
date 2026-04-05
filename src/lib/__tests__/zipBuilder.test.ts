@@ -25,13 +25,6 @@ vi.mock('jszip', () => {
   return { default: MockJSZip }
 })
 
-function makeCanvas(size: number): HTMLCanvasElement {
-  const c = document.createElement('canvas')
-  c.width = size
-  c.height = size
-  return c
-}
-
 beforeEach(() => {
   vi.spyOn(global, 'Image').mockImplementation(function(this: any) {
     this.onload = null

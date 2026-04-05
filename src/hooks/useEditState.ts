@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { EditState, Version, DEFAULT_EDIT_STATE } from '../types'
+import { DEFAULT_EDIT_STATE } from '../types'
+import type { EditState, Version } from '../types'
 
 interface UseEditStateReturn {
   state: EditState
