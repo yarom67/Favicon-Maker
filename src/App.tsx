@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { useEditState } from './hooks/useEditState'
 import { UploadZone } from './components/UploadZone'
 import { Editor } from './components/Editor'
@@ -7,7 +7,6 @@ import { ExportButton } from './components/ExportButton'
 import { BrowserTabPreview } from './components/previews/BrowserTabPreview'
 import { BookmarksPreview } from './components/previews/BookmarksPreview'
 import { MobileBrowserPreview } from './components/previews/MobileBrowserPreview'
-import { FaviconScore } from './components/FaviconScore'
 import { applyEdits } from './lib/applyEdits'
 import { rasterizeSvg } from './lib/svgRasterizer'
 import type { EditState } from './types'
@@ -126,18 +125,18 @@ export default function App() {
   }, [replaceJpegPending, replaceJpegBgColor, setState])
 
   const leftPanel = (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 overflow-y-auto h-full pb-4">
       {!hasImage && (
         <UploadZone onImageLoaded={(payload) => setState(payload)} />
       )}
-
       {hasImage && (
         <>
           <button
             onClick={() => replaceInputRef.current?.click()}
-            className="text-sm text-slate-400 hover:text-slate-600 transition-colors text-center"
+            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors font-medium self-start"
           >
-            ← Upload a different image
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Replace image
           </button>
           <Editor
             state={state}
@@ -147,21 +146,80 @@ export default function App() {
           <Controls state={state} onChange={setState} />
         </>
       )}
-
-      <ExportButton state={state} />
     </div>
   )
 
-  const rightPanel = (
+  const features = [
+    {
+      label: 'Browser & Bookmarks',
+      desc: '16×16, 32×32 + ICO bundle',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      ),
+    },
+    {
+      label: 'iOS & Android',
+      desc: '180×180, 192×192, 512×512',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+          <line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+      ),
+    },
+    {
+      label: 'Live preview',
+      desc: 'See changes in real time',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      ),
+    },
+    {
+      label: 'One-click export',
+      desc: 'ZIP with all sizes + README',
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+      ),
+    },
+  ]
+
+  const rightPanel = hasImage ? (
     <div className="flex flex-col gap-5">
-      <FaviconScore state={state} />
-      <div className="grid grid-cols-2 gap-4">
-        <BrowserTabPreview state={state} />
-        <BookmarksPreview state={state} />
-      </div>
-      <div className="flex justify-center">
-        <div className="w-1/2">
-          <MobileBrowserPreview state={state} />
+      <BrowserTabPreview state={state} />
+      <BookmarksPreview state={state} />
+      <MobileBrowserPreview state={state} />
+    </div>
+  ) : (
+    <div className="h-full flex flex-col">
+      <div className="flex-1 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50/60 border border-orange-100 p-8 flex flex-col justify-center">
+        <h2 className="font-display font-bold text-slate-800 text-2xl mb-2">
+          Your logo, every platform
+        </h2>
+        <p className="text-base text-slate-500 mb-8">
+          Upload a PNG, JPG, or SVG — get a complete favicon set in seconds.
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          {features.map(f => (
+            <div key={f.label} className="bg-white/70 rounded-2xl p-5 flex gap-4 items-start">
+              <div className="text-orange-400 mt-0.5 flex-none">
+                {React.cloneElement(f.icon as React.ReactElement<React.SVGProps<SVGSVGElement>>, { width: 22, height: 22 })}
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-slate-700 mb-0.5">{f.label}</div>
+                <div className="text-sm text-slate-400">{f.desc}</div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -223,28 +281,37 @@ export default function App() {
         <h1 className="font-display font-bold text-xl text-slate-900 tracking-tight">
           Favicon Maker
         </h1>
-        <span className="text-xs text-slate-400 font-medium">Free · No account needed</span>
+        <span className="text-sm text-slate-500 font-medium">✓ Free · No account needed</span>
       </header>
 
       {/* Desktop layout */}
       <div className="hidden md:flex h-[calc(100vh-65px)] max-w-5xl mx-auto border-x border-slate-100">
         {/* Left panel */}
-        <div className="w-[440px] flex-none border-r border-slate-100 overflow-y-auto px-5 py-6 flex flex-col gap-6">
+        <div className="w-[440px] flex-none border-r border-slate-100 overflow-hidden px-5 py-6 flex flex-col">
           {leftPanel}
         </div>
         {/* Right panel */}
-        <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50">
-          <h2 className="font-display font-semibold text-slate-800 text-sm mb-5 uppercase tracking-wide">
-            Live preview
-          </h2>
-          {rightPanel}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className={`flex-1 p-6 bg-slate-50/50 ${hasImage ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+            {rightPanel}
+          </div>
+          {hasImage && (
+            <div className="flex-none p-4 border-t border-slate-100 bg-white">
+              <ExportButton state={state} />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Mobile layout */}
       <div className="md:hidden pb-20">
-        <div className="p-4">
-          {mobileTab === 'edit' ? leftPanel : rightPanel}
+        <div className="p-4 flex flex-col gap-5">
+          {mobileTab === 'edit' ? leftPanel : (
+            <>
+              {rightPanel}
+              <ExportButton state={state} />
+            </>
+          )}
         </div>
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 flex">
           {(['edit', 'preview'] as MobileTab[]).map(tab => (

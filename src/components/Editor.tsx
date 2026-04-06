@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect, useCallback, useState } from 'react'
 import { Stage, Layer, Rect, Image as KonvaImage, Group } from 'react-konva'
 import Konva from 'konva'
 import type { EditState } from '../types'
@@ -32,6 +32,19 @@ function getClipFunc(shapeMask: EditState['shapeMask'], size: number) {
 export function Editor({ state, onStateChange, onCommit }: EditorProps) {
   const [imageEl, setImageEl] = React.useState<HTMLImageElement | HTMLCanvasElement | null>(null)
   const lastDist = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerSize, setContainerSize] = useState(EDITOR_SIZE)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const ro = new ResizeObserver(entries => {
+      const w = entries[0].contentRect.width
+      if (w > 0) setContainerSize(Math.floor(w))
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!state.imageType) return
@@ -45,13 +58,11 @@ export function Editor({ state, onStateChange, onCommit }: EditorProps) {
     }
   }, [state.imageType, state.imageDataUrl, state.svgString])
 
-  const iw = imageEl
-    ? ((imageEl as HTMLCanvasElement).width || (imageEl as HTMLImageElement).naturalWidth || EDITOR_SIZE)
-    : EDITOR_SIZE
-  const ih = imageEl
-    ? ((imageEl as HTMLCanvasElement).height || (imageEl as HTMLImageElement).naturalHeight || EDITOR_SIZE)
-    : EDITOR_SIZE
+  const iw = state.imgWidth || (imageEl ? ((imageEl as HTMLCanvasElement).width || EDITOR_SIZE) : EDITOR_SIZE)
+  const ih = state.imgHeight || (imageEl ? ((imageEl as HTMLCanvasElement).height || EDITOR_SIZE) : EDITOR_SIZE)
 
+  // Scale everything from EDITOR_SIZE coordinate space to actual container size
+  const scale = containerSize / EDITOR_SIZE
   const coverRatio = Math.max(EDITOR_SIZE / iw, EDITOR_SIZE / ih)
   const drawW = iw * coverRatio * state.scale
   const drawH = ih * coverRatio * state.scale
@@ -66,7 +77,7 @@ export function Editor({ state, onStateChange, onCommit }: EditorProps) {
     )
     if (lastDist.current > 0) {
       const delta = dist / lastDist.current
-      onStateChange({ scale: Math.max(0.1, Math.min(10, state.scale * delta)) })
+      onStateChange({ scale: Math.max(0.25, Math.min(4, state.scale * delta)) })
     }
     lastDist.current = dist
   }, [state.scale, onStateChange])
@@ -79,16 +90,18 @@ export function Editor({ state, onStateChange, onCommit }: EditorProps) {
   const handleWheel = useCallback((e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault()
     const delta = e.evt.deltaY > 0 ? 0.9 : 1.1
-    onStateChange({ scale: Math.max(0.1, Math.min(10, state.scale * delta)) })
+    onStateChange({ scale: Math.max(0.25, Math.min(4, state.scale * delta)) })
   }, [state.scale, onStateChange])
 
   if (!state.imageType || !imageEl) return null
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-slate-100 bg-slate-50 p-2">
+    <div ref={containerRef} className="w-full aspect-square rounded-2xl overflow-hidden border border-slate-100 bg-slate-50">
       <Stage
-        width={EDITOR_SIZE}
-        height={EDITOR_SIZE}
+        width={containerSize}
+        height={containerSize}
+        scaleX={scale}
+        scaleY={scale}
         onWheel={handleWheel}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}

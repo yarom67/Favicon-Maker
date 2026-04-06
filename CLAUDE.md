@@ -37,29 +37,38 @@ src/
     icoGenerator.ts           — custom PNG-in-ICO binary encoder, no external lib
     zipBuilder.ts             — renders all export sizes, assembles JSZip, triggers FileSaver
   components/
-    UploadZone.tsx            — drag-drop, JPEG detection → color modal before proceeding
+    UploadZone.tsx            — drag-drop + keyboard accessible, JPEG detection → color modal (Cancel + Continue)
     Editor.tsx                — react-konva stage: drag, scroll-zoom, pinch-zoom
-    Controls.tsx              — rotation slider, bg color picker, shape mask tiles
-    VersionHistory.tsx        — thumbnail strip, click to restore
-    ExportButton.tsx          — orange gradient button, disabled without image
+    Controls.tsx              — zoom/rotation sliders, bg color picker, shape mask tiles
+    ExportButton.tsx          — orange gradient button, success feedback ("✓ Downloaded!"), aria-live
+    FaviconScore.tsx          — quality score (Simplicity/Contrast/Legibility), hover tooltips per metric
     previews/
       useFaviconDataUrl.ts    — debounced hook (150ms) that renders favicon at a given size
       BrowserTabPreview.tsx   — 32px
       BookmarksPreview.tsx    — 16px
-      iOSPreview.tsx          — 180px
-      AndroidPreview.tsx      — 192px
-  App.tsx                     — two-panel desktop layout, tab-toggle mobile
+      MobileBrowserPreview.tsx — 32px, Chrome mobile mockup
+  App.tsx                     — two-panel desktop (max-w-5xl), tab-toggle mobile; sticky ExportButton
 ```
 
 ## Key behaviors to preserve
 
-**JPEG uploads must always show the background color modal.** There is no path to proceed without picking a color. The `UploadZone` sets `jpegPending` state — only the "Continue" button calls `onImageLoaded`.
+**JPEG uploads must always show the background color modal.** Both the initial upload (UploadZone) and the replace-image flow (App.tsx) show this modal. Both have Cancel + Continue buttons. Only "Continue" calls `onImageLoaded` / `setState`. Cancel returns to previous state without change.
 
-**PNG and SVG must preserve transparency.** `bgColor: ''` (empty string) means transparent. `applyEdits` only calls `fillRect` when `bgColor` is truthy. Never default to white for these types.
+**PNG and SVG must preserve transparency.** `bgColor: ''` (empty string) means transparent. `applyEdits` only calls `fillRect` when `bgColor` is truthy. Never default to white for these types. When `bgColor` is empty, the background color swatch shows a checkerboard pattern (not white).
 
 **SVG dimensions are parsed from the markup** (width/height attributes, then viewBox) — not hardcoded. See `parseSvgDimensions` in `UploadZone.tsx`. This affects the cover-ratio calculation in `applyEdits`.
 
-**Version history** captures a 64×64 thumbnail on every commit gesture (drag end, rotation release, color picker close, shape tile click). Max 20 entries, oldest dropped with `slice(0, 20)` after prepend.
+**Version history** captures a 64×64 thumbnail on every commit gesture (drag end, rotation release, color picker close, shape tile click). Max 20 entries, oldest dropped with `slice(0, 20)` after prepend. VersionHistory component is hidden from UI — auto-commit still runs silently.
+
+**Zoom slider is non-linear.** Range input is `0–1` internally; value 0.5 maps to `scale=1.0` (natural size). Left half: 0.25–1x, right half: 1–4x. Display shows `Math.round(state.scale * 100)%`.
+
+**Shape tiles render the actual favicon** using `useFaviconDataUrl(state, 32)` inside Controls. Falls back to a static slate placeholder when no image is loaded.
+
+**Export button shows success state.** After ZIP downloads, button shows "✓ Downloaded!" for 2 seconds. Accessible via `aria-busy` + `aria-live="polite"`.
+
+**Left panel layout:** Scrollable content area (`flex-1 overflow-y-auto`) + sticky `ExportButton` pinned to bottom (`flex-none`, `border-t`). The outer panel container is `overflow-hidden`, not `overflow-y-auto`.
+
+**Right panel empty state:** When no image loaded, right panel shows greyed-out skeleton placeholders (`opacity-40 pointer-events-none`) with "Upload a logo to see live previews" message.
 
 ## Tech stack
 

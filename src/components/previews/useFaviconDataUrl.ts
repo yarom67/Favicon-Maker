@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import type { EditState } from '../../types'
 import { applyEdits } from '../../lib/applyEdits'
 import { rasterizeSvg } from '../../lib/svgRasterizer'
+import { EDITOR_SIZE } from '../Editor'
 
 export function useFaviconDataUrl(state: EditState, size: number): string | null {
   const [dataUrl, setDataUrl] = useState<string | null>(null)
@@ -23,7 +24,9 @@ export function useFaviconDataUrl(state: EditState, size: number): string | null
 
       try {
         if (state.svgString) {
-          imageEl = await rasterizeSvg(state.svgString, size)
+          // Always rasterize SVG at EDITOR_SIZE — same as the interactive Editor.
+          // This ensures sub-pixel SVG rendering is identical between the two paths.
+          imageEl = await rasterizeSvg(state.svgString, EDITOR_SIZE)
         } else {
           imageEl = await new Promise<HTMLImageElement>((resolve, reject) => {
             const img = new Image()
@@ -38,11 +41,17 @@ export function useFaviconDataUrl(state: EditState, size: number): string | null
 
       if (cancelled) return
 
+      // Render at EDITOR_SIZE — exactly matches the Editor's rendering path.
+      const bigCanvas = document.createElement('canvas')
+      bigCanvas.width = EDITOR_SIZE
+      bigCanvas.height = EDITOR_SIZE
+      applyEdits(bigCanvas.getContext('2d')!, imageEl, state, EDITOR_SIZE)
+
+      // Downscale to the target display size.
       const canvas = document.createElement('canvas')
       canvas.width = size
       canvas.height = size
-      const ctx = canvas.getContext('2d')!
-      applyEdits(ctx, imageEl, state, size)
+      canvas.getContext('2d')!.drawImage(bigCanvas, 0, 0, size, size)
       setDataUrl(canvas.toDataURL('image/png'))
     }, 150)
 

@@ -126,6 +126,10 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
   return (
     <>
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Upload image — drop here or click to browse. Supports PNG, JPEG, SVG"
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputRef.current?.click() } }}
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
@@ -139,7 +143,11 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
             : 'border-slate-200 bg-slate-50 hover:border-orange-300 hover:bg-orange-50/40'}
         `}
       >
-        <div className="text-4xl">🖼️</div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
         <div className="text-center">
           <p className="font-display font-semibold text-slate-800 text-base">
             Drop your logo here
@@ -176,14 +184,22 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
               />
               <span className="text-slate-600 font-mono text-sm">{bgColor}</span>
             </div>
-            <button
-              onClick={confirmJpegBg}
-              className="w-full py-3 rounded-xl font-display font-semibold text-white text-sm
-                         bg-gradient-to-r from-orange-400 to-orange-500
-                         hover:from-orange-500 hover:to-orange-600 transition-all"
-            >
-              Continue
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setJpegPending(null)}
+                className="flex-1 py-3 rounded-xl font-display font-semibold text-slate-500 text-sm bg-slate-100 hover:bg-slate-200 transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmJpegBg}
+                className="flex-1 py-3 rounded-xl font-display font-semibold text-white text-sm
+                           bg-gradient-to-r from-orange-400 to-orange-500
+                           hover:from-orange-500 hover:to-orange-600 transition-all"
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
       )}

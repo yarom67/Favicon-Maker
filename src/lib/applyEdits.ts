@@ -17,6 +17,7 @@ function applyClipPath(
     ;(ctx as any).roundRect(0, 0, size, size, r)
     ctx.clip()
   } else if (mask === 'circle') {
+    ctx.beginPath()
     ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2)
     ctx.clip()
   }
