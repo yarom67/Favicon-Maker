@@ -6,6 +6,20 @@ interface ControlsProps {
   onChange: (partial: Partial<EditState>) => void
 }
 
+function ResetButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      title="Reset"
+      className="ml-2 inline-flex items-center gap-1 text-[11px] font-medium
+                 text-slate-400 hover:text-slate-600 border border-slate-200
+                 hover:border-slate-300 rounded-full px-2 py-0.5 transition-all"
+    >
+      ↺ Reset
+    </button>
+  )
+}
+
 const SHAPE_OPTIONS: { value: ShapeMask; label: string; preview: ReactNode }[] = [
   {
     value: 'square',
@@ -22,22 +36,44 @@ const SHAPE_OPTIONS: { value: ShapeMask; label: string; preview: ReactNode }[] =
     label: 'Circle',
     preview: <div className="w-8 h-8 bg-slate-700 rounded-full" />,
   },
-  {
-    value: 'none',
-    label: 'None',
-    preview: <div className="w-8 h-8 bg-slate-700 rounded-sm opacity-30 border-2 border-dashed border-slate-400" />,
-  },
 ]
+
+const sliderClass = `w-full h-2 appearance-none bg-slate-200 rounded-full
+  [&::-webkit-slider-thumb]:appearance-none
+  [&::-webkit-slider-thumb]:w-4
+  [&::-webkit-slider-thumb]:h-4
+  [&::-webkit-slider-thumb]:rounded-full
+  [&::-webkit-slider-thumb]:bg-orange-500
+  [&::-webkit-slider-thumb]:cursor-pointer`
 
 export function Controls({ state, onChange }: ControlsProps) {
   return (
     <div className="flex flex-col gap-6">
 
+      {/* Zoom */}
+      <div>
+        <label className="flex items-center text-sm font-semibold text-slate-700 mb-2 font-display">
+          Zoom
+          <span className="ml-2 font-normal text-slate-400 text-xs">{Math.round(state.scale * 100)}%</span>
+          <ResetButton onClick={() => onChange({ scale: 1 })} />
+        </label>
+        <input
+          type="range"
+          min={0.25}
+          max={4}
+          step={0.01}
+          value={state.scale}
+          onChange={(e) => onChange({ scale: Number(e.target.value) })}
+          className={sliderClass}
+        />
+      </div>
+
       {/* Rotation */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2 font-display">
+        <label className="flex items-center text-sm font-semibold text-slate-700 mb-2 font-display">
           Rotation
           <span className="ml-2 font-normal text-slate-400 text-xs">{state.rotation}°</span>
+          <ResetButton onClick={() => onChange({ rotation: 0 })} />
         </label>
         <input
           type="range"
@@ -52,20 +88,15 @@ export function Controls({ state, onChange }: ControlsProps) {
               onChange({ rotation: Math.max(-180, state.rotation - 1) })
             }
           }}
-          className="w-full h-2 appearance-none bg-slate-200 rounded-full
-                     [&::-webkit-slider-thumb]:appearance-none
-                     [&::-webkit-slider-thumb]:w-4
-                     [&::-webkit-slider-thumb]:h-4
-                     [&::-webkit-slider-thumb]:rounded-full
-                     [&::-webkit-slider-thumb]:bg-orange-500
-                     [&::-webkit-slider-thumb]:cursor-pointer"
+          className={sliderClass}
         />
       </div>
 
       {/* Background color */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2 font-display">
+        <label className="flex items-center text-sm font-semibold text-slate-700 mb-2 font-display">
           Background
+          <ResetButton onClick={() => onChange({ bgColor: '' })} />
         </label>
         <div className="flex items-center gap-3">
           <input
@@ -92,10 +123,11 @@ export function Controls({ state, onChange }: ControlsProps) {
 
       {/* Shape mask */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2 font-display">
+        <label className="flex items-center text-sm font-semibold text-slate-700 mb-2 font-display">
           Shape
+          <ResetButton onClick={() => onChange({ shapeMask: 'square' })} />
         </label>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {SHAPE_OPTIONS.map(({ value, label, preview }) => (
             <button
               key={value}

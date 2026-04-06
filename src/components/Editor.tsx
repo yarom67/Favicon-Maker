@@ -85,7 +85,7 @@ export function Editor({ state, onStateChange, onCommit }: EditorProps) {
   if (!state.imageType || !imageEl) return null
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-slate-100 bg-slate-50">
+    <div className="rounded-2xl overflow-hidden border border-slate-100 bg-slate-50 p-2">
       <Stage
         width={EDITOR_SIZE}
         height={EDITOR_SIZE}

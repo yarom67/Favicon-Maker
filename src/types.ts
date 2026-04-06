@@ -32,5 +32,5 @@ export const DEFAULT_EDIT_STATE: EditState = {
   scale: 1,
   rotation: 0,
   bgColor: '',
-  shapeMask: 'none',
+  shapeMask: 'square',
 }
