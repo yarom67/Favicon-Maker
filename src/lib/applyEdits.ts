@@ -34,6 +34,10 @@ export function applyEdits(
 
   ctx.clearRect(0, 0, size, size)
 
+  // High-quality interpolation for all scaling operations
+  ctx.imageSmoothingEnabled = true
+  ;(ctx as CanvasRenderingContext2D & { imageSmoothingQuality: string }).imageSmoothingQuality = 'high'
+
   ctx.save()
   // Apply clip path
   applyClipPath(ctx, size, shapeMask)

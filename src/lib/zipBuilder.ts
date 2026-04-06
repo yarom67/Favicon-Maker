@@ -12,9 +12,15 @@ Drop this file in the root folder of your website. This is the main favicon
 that shows up in browser tabs. Most website builders let you upload this directly
 in their settings.
 
+favicon.svg  (only included if you uploaded an SVG)
+Modern browsers (Chrome, Firefox, Safari) support SVG favicons and scale them
+perfectly at any size. Add to your <head>:
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
 browsers/
 Use these PNG files if your website builder asks for a PNG favicon instead of an
-.ico file. Use favicon-32x32.png for the best quality.
+.ico file. Use favicon-48x48.png for the best quality — it's the minimum size
+Google recommends for favicons.
 
 ios/
 This is what shows up when someone saves your website to their iPhone or iPad home
@@ -66,24 +72,36 @@ export async function buildFaviconZip(state: EditState): Promise<void> {
     return renderToCanvas(imgEl, state, size)
   }
 
-  const [c16, c32, c48, c180, c192, c512] = await Promise.all([
+  const [c16, c32, c48, c96, c180, c192, c256, c512] = await Promise.all([
     renderSize(16),
     renderSize(32),
     renderSize(48),
+    renderSize(96),
     renderSize(180),
     renderSize(192),
+    renderSize(256),
     renderSize(512),
   ])
 
-  const icoBlob = await generateIco([c16, c32, c48])
+  // ICO: 16, 32, 48, 256 — covers all Windows / browser legacy cases
+  const icoBlob = await generateIco([c16, c32, c48, c256])
 
   const zip = new JSZip()
   zip.file('favicon.ico', icoBlob)
   zip.file('README.txt', README)
 
+  // Export original SVG if the input was SVG (best quality for modern browsers)
+  if (state.svgString) {
+    zip.file('favicon.svg', state.svgString)
+  }
+
   const browsers = zip.folder('browsers')!
   browsers.file('favicon-16x16.png', canvasToBase64Png(c16), { base64: true })
   browsers.file('favicon-32x32.png', canvasToBase64Png(c32), { base64: true })
+  // 48×48 is Google's recommended minimum favicon size
+  browsers.file('favicon-48x48.png', canvasToBase64Png(c48), { base64: true })
+  // 96×96 is a 2× retina version of the Google minimum
+  browsers.file('favicon-96x96.png', canvasToBase64Png(c96), { base64: true })
 
   const ios = zip.folder('ios')!
   ios.file('apple-touch-icon.png', canvasToBase64Png(c180), { base64: true })
