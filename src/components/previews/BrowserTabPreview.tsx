@@ -6,7 +6,6 @@ export function BrowserTabPreview({ state }: { state: EditState }) {
 
   return (
     <div>
-      <p className="text-xs text-slate-400 font-medium mb-2 font-display uppercase tracking-wide">Browser tab</p>
       <div className="bg-slate-100 rounded-2xl p-3">
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           <div className="flex items-center bg-slate-100 px-2 pt-2 gap-1">

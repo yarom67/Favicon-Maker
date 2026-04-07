@@ -47,7 +47,7 @@ src/
       BrowserTabPreview.tsx   — 32px
       BookmarksPreview.tsx    — 16px
       MobileBrowserPreview.tsx — 32px, Chrome mobile mockup
-  App.tsx                     — two-panel desktop (max-w-5xl), tab-toggle mobile; sticky ExportButton
+  App.tsx                     — two-panel desktop (max-w-7xl), tab-toggle mobile; sticky ExportButton
 ```
 
 ## Key behaviors to preserve
@@ -66,9 +66,21 @@ src/
 
 **Export button shows success state.** After ZIP downloads, button shows "✓ Downloaded!" for 2 seconds. Accessible via `aria-busy` + `aria-live="polite"`.
 
-**Left panel layout:** Scrollable content area (`flex-1 overflow-y-auto`) + sticky `ExportButton` pinned to bottom (`flex-none`, `border-t`). The outer panel container is `overflow-hidden`, not `overflow-y-auto`.
+**Left panel layout:** Scrollable content area (`overflow-y-auto h-full`) inside an `overflow-hidden` outer container. A `pointer-events-none` bottom fade gradient (`h-16 bg-gradient-to-t from-white`) is absolutely positioned over the panel to hint at scroll.
 
-**Right panel empty state:** When no image loaded, right panel shows greyed-out skeleton placeholders (`opacity-40 pointer-events-none`) with "Upload a logo to see live previews" message.
+**Replace image button** renders as a visible pill (`border border-slate-200 rounded-full px-3 py-1.5`) — not a plain text link.
+
+**Transparent button** uses the same orange selected-state as shape tiles (`border-2 border-orange-400 bg-orange-50 text-orange-700`) when active, not `bg-slate-800`.
+
+**Preview labels** (Browser tab / Bookmarks bar / Mobile browser) have been removed from the preview components — the mockups are self-explanatory. A single "Previews" header with a green `● Live` dot lives in App.tsx instead.
+
+**Editor shows a shimmer skeleton** (`animate-pulse` gray square) while `imageEl` is null but `state.imageType` is set (i.e., SVG is still rasterizing).
+
+**Right panel empty state** shows a static "What you'll get" mockup (browser tab + home screen icon) above the feature grid, so users see output examples before uploading.
+
+**Icon slider** has a right-side fade gradient + chevron that disappears once the user scrolls to the end.
+
+**Right panel empty state:** When no image loaded, right panel shows a static output mockup and feature grid.
 
 ## Tech stack
 

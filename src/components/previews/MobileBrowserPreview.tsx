@@ -6,7 +6,6 @@ export function MobileBrowserPreview({ state }: { state: EditState }) {
 
   return (
     <div>
-      <p className="text-xs text-slate-400 font-medium mb-2 font-display uppercase tracking-wide">Mobile browser</p>
       <div className="bg-slate-100 rounded-2xl p-3">
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden max-w-[240px] mx-auto">
           {/* Status bar */}

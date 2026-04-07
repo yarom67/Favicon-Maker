@@ -1,0 +1,111 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "Favicon Maker" [level=1] [ref=e5]
+    - generic [ref=e6]: ✓ Free · No account needed
+  - generic [ref=e7]:
+    - generic [ref=e9]:
+      - button "Replace image" [ref=e113] [cursor=pointer]:
+        - img [ref=e114]
+        - text: Replace image
+      - generic [ref=e117]:
+        - paragraph [ref=e118]: Or start with a free iconMIT license · fully editable
+        - generic [ref=e119]:
+          - button "Use Star icon" [ref=e120] [cursor=pointer]:
+            - img [ref=e121]
+          - button "Use Heart icon" [ref=e123] [cursor=pointer]:
+            - img [ref=e124]
+          - button "Use Bolt icon" [ref=e126] [cursor=pointer]:
+            - img [ref=e127]
+          - button "Use Rocket icon" [pressed] [ref=e129] [cursor=pointer]:
+            - img [ref=e130]
+          - button "Use Flame icon" [ref=e132] [cursor=pointer]:
+            - img [ref=e133]
+          - button "Use Globe icon" [ref=e135] [cursor=pointer]:
+            - img [ref=e136]
+          - button "Use Code icon" [ref=e138] [cursor=pointer]:
+            - img [ref=e139]
+          - button "Use Terminal icon" [ref=e141] [cursor=pointer]:
+            - img [ref=e142]
+          - button "Use Sparkles icon" [ref=e144] [cursor=pointer]:
+            - img [ref=e145]
+          - button "Use Shield icon" [ref=e147] [cursor=pointer]:
+            - img [ref=e148]
+          - button "Use House icon" [ref=e150] [cursor=pointer]:
+            - img [ref=e151]
+          - button "Use Music icon" [ref=e153] [cursor=pointer]:
+            - img [ref=e154]
+          - button "Use Camera icon" [ref=e156] [cursor=pointer]:
+            - img [ref=e157]
+          - button "Use Eye icon" [ref=e159] [cursor=pointer]:
+            - img [ref=e160]
+          - button "Use Leaf icon" [ref=e162] [cursor=pointer]:
+            - img [ref=e163]
+          - button "Use Trophy icon" [ref=e165] [cursor=pointer]:
+            - img [ref=e166]
+          - button "Use Diamond icon" [ref=e168] [cursor=pointer]:
+            - img [ref=e169]
+          - button "Use Cursor icon" [ref=e171] [cursor=pointer]:
+            - img [ref=e172]
+      - generic [ref=e177]:
+        - generic [ref=e178]:
+          - generic [ref=e179]:
+            - text: Zoom
+            - generic [ref=e180]: 100%
+            - button "Zoom 100%" [ref=e181] [cursor=pointer]: ↺ Reset
+          - generic [ref=e182]:
+            - slider [ref=e183]: "0.5"
+            - generic:
+              - generic: 100%
+        - generic [ref=e184]:
+          - generic [ref=e185]:
+            - text: Rotation
+            - generic [ref=e186]: 0°
+            - button "Rotation 0°" [ref=e187] [cursor=pointer]: ↺ Reset
+          - generic [ref=e188]:
+            - slider [ref=e189]: "0"
+            - generic:
+              - generic: 0°
+        - generic [ref=e190]:
+          - generic [ref=e191]:
+            - text: Background
+            - button "↺ Reset" [ref=e192] [cursor=pointer]
+          - generic [ref=e193]:
+            - generic "Click to set background color (currently transparent)" [ref=e194] [cursor=pointer]
+            - button "Transparent" [ref=e195] [cursor=pointer]
+        - generic [ref=e196]:
+          - generic [ref=e197]:
+            - text: Shape
+            - button "Shape" [ref=e198] [cursor=pointer]: ↺ Reset
+          - generic [ref=e199]:
+            - button "Square" [pressed] [ref=e200] [cursor=pointer]:
+              - generic [ref=e202]: Square
+            - button "Rounded" [ref=e203] [cursor=pointer]:
+              - generic [ref=e205]: Rounded
+            - button "Circle" [ref=e206] [cursor=pointer]:
+              - generic [ref=e208]: Circle
+    - generic [ref=e75]:
+      - generic [ref=e77]:
+        - generic [ref=e209]:
+          - paragraph [ref=e210]: Browser tab
+          - generic [ref=e212]:
+            - generic [ref=e213]:
+              - generic [ref=e215]: My Website
+              - generic [ref=e216]: +
+            - generic [ref=e217]:
+              - generic [ref=e218]: 🔒
+              - generic [ref=e219]: mywebsite.com
+        - generic [ref=e223]:
+          - paragraph [ref=e224]: Bookmarks bar
+          - generic [ref=e226]:
+            - generic [ref=e228]: My Website
+            - generic [ref=e231]: GitHub
+            - generic [ref=e234]: Figma
+            - generic [ref=e237]: Notion
+        - generic [ref=e238]:
+          - paragraph [ref=e239]: Mobile browser
+          - generic [ref=e241]:
+            - generic [ref=e243]: 9:41
+            - generic [ref=e253]:
+              - generic [ref=e254]: mywebsite.com
+              - generic [ref=e255]: ↻
+      - button "↓ Export ZIP" [ref=e262] [cursor=pointer]

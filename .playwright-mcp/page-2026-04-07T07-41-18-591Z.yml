@@ -1,0 +1,74 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - heading "Favicon Maker" [level=1] [ref=e5]
+    - generic [ref=e6]: ✓ Free · No account needed
+  - generic [ref=e7]:
+    - generic [ref=e9]:
+      - button "Upload image — drop here or click to browse. Supports PNG, JPEG, SVG" [ref=e10] [cursor=pointer]:
+        - img [ref=e11]
+        - generic [ref=e15]:
+          - paragraph [ref=e16]: Drop your logo here
+          - paragraph [ref=e17]: PNG, JPG, or SVG · or browse files
+      - generic [ref=e18]:
+        - paragraph [ref=e19]: Or start with a free iconMIT license · fully editable
+        - generic [ref=e20]:
+          - button "Use Star icon" [ref=e21] [cursor=pointer]:
+            - img [ref=e22]
+          - button "Use Heart icon" [ref=e24] [cursor=pointer]:
+            - img [ref=e25]
+          - button "Use Bolt icon" [ref=e27] [cursor=pointer]:
+            - img [ref=e28]
+          - button "Use Rocket icon" [ref=e30] [cursor=pointer]:
+            - img [ref=e31]
+          - button "Use Flame icon" [ref=e33] [cursor=pointer]:
+            - img [ref=e34]
+          - button "Use Globe icon" [ref=e36] [cursor=pointer]:
+            - img [ref=e37]
+          - button "Use Code icon" [ref=e39] [cursor=pointer]:
+            - img [ref=e40]
+          - button "Use Terminal icon" [ref=e42] [cursor=pointer]:
+            - img [ref=e43]
+          - button "Use Sparkles icon" [ref=e45] [cursor=pointer]:
+            - img [ref=e46]
+          - button "Use Shield icon" [ref=e48] [cursor=pointer]:
+            - img [ref=e49]
+          - button "Use House icon" [ref=e51] [cursor=pointer]:
+            - img [ref=e52]
+          - button "Use Music icon" [ref=e54] [cursor=pointer]:
+            - img [ref=e55]
+          - button "Use Camera icon" [ref=e57] [cursor=pointer]:
+            - img [ref=e58]
+          - button "Use Eye icon" [ref=e60] [cursor=pointer]:
+            - img [ref=e61]
+          - button "Use Leaf icon" [ref=e63] [cursor=pointer]:
+            - img [ref=e64]
+          - button "Use Trophy icon" [ref=e66] [cursor=pointer]:
+            - img [ref=e67]
+          - button "Use Diamond icon" [ref=e69] [cursor=pointer]:
+            - img [ref=e70]
+          - button "Use Cursor icon" [ref=e72] [cursor=pointer]:
+            - img [ref=e73]
+    - generic [ref=e78]:
+      - heading "Your logo, every platform" [level=2] [ref=e79]
+      - paragraph [ref=e80]: Upload a PNG, JPG, or SVG — get a complete favicon set in seconds.
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - img [ref=e84]
+          - generic [ref=e87]:
+            - generic [ref=e88]: Browser & Bookmarks
+            - generic [ref=e89]: 16×16, 32×32 + ICO bundle
+        - generic [ref=e90]:
+          - img [ref=e92]
+          - generic [ref=e94]:
+            - generic [ref=e95]: iOS & Android
+            - generic [ref=e96]: 180×180, 192×192, 512×512
+        - generic [ref=e97]:
+          - img [ref=e99]
+          - generic [ref=e102]:
+            - generic [ref=e103]: Live preview
+            - generic [ref=e104]: See changes in real time
+        - generic [ref=e105]:
+          - img [ref=e107]
+          - generic [ref=e110]:
+            - generic [ref=e111]: One-click export
+            - generic [ref=e112]: ZIP with all sizes + README

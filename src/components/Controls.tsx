@@ -48,24 +48,31 @@ export function Controls({ state, onChange }: ControlsProps) {
           <span className="ml-2 font-normal text-slate-400 text-xs">{Math.round(state.scale * 100)}%</span>
           <ResetButton onClick={() => onChange({ scale: 1 })} />
         </label>
-        <input
-          type="range"
-          min={0}
-          max={1}
-          step={0.005}
-          value={state.scale <= 1
-            ? (state.scale - 0.25) / (1 - 0.25) * 0.5
-            : 0.5 + (state.scale - 1) / (4 - 1) * 0.5
-          }
-          onChange={(e) => {
-            const v = Number(e.target.value)
-            const scale = v <= 0.5
-              ? 0.25 + v / 0.5 * (1 - 0.25)
-              : 1 + (v - 0.5) / 0.5 * (4 - 1)
-            onChange({ scale: Math.round(scale * 100) / 100 })
-          }}
-          className={sliderClass}
-        />
+        <div className="relative pb-4">
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.005}
+            value={state.scale <= 1
+              ? (state.scale - 0.25) / (1 - 0.25) * 0.5
+              : 0.5 + (state.scale - 1) / (4 - 1) * 0.5
+            }
+            onChange={(e) => {
+              const v = Number(e.target.value)
+              const snapped = Math.abs(v - 0.5) <= 0.03 ? 0.5 : v
+              const scale = snapped <= 0.5
+                ? 0.25 + snapped / 0.5 * (1 - 0.25)
+                : 1 + (snapped - 0.5) / 0.5 * (4 - 1)
+              onChange({ scale: Math.round(scale * 100) / 100 })
+            }}
+            className={sliderClass}
+          />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0.5 pointer-events-none">
+            <div className="w-px h-2 bg-slate-300 rounded-full" />
+            <span className="text-[9px] text-slate-300 leading-none">100%</span>
+          </div>
+        </div>
       </div>
 
       {/* Rotation */}
@@ -132,10 +139,10 @@ export function Controls({ state, onChange }: ControlsProps) {
           )}
           <button
             onClick={() => onChange({ bgColor: '' })}
-            className={`text-xs px-3 py-1.5 rounded-lg transition-all font-medium ${
+            className={`text-xs px-3 py-1.5 rounded-lg transition-all font-medium border-2 ${
               !state.bgColor
-                ? 'bg-slate-800 text-white'
-                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                ? 'border-orange-400 bg-orange-50 text-orange-700'
+                : 'border-transparent bg-slate-100 text-slate-500 hover:bg-slate-200'
             }`}
           >
             Transparent

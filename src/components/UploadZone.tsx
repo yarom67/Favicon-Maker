@@ -1,5 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react'
 import type { ImageType } from '../types'
+import { PresetIconSlider } from './PresetIconSlider'
 
 interface ImageLoadedPayload {
   imageType: ImageType
@@ -52,6 +53,7 @@ function parseSvgDimensions(svgString: string): { width: number; height: number 
 export function UploadZone({ onImageLoaded }: UploadZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [selectedPresetSvg, setSelectedPresetSvg] = useState<string | null>(null)
   const [jpegPending, setJpegPending] = useState<{
     dataUrl: string
     width: number
@@ -123,6 +125,11 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
     setJpegPending(null)
   }, [jpegPending, bgColor, onImageLoaded])
 
+  const handlePresetIcon = useCallback((payload: Parameters<typeof onImageLoaded>[0]) => {
+    setSelectedPresetSvg(payload.svgString)
+    onImageLoaded(payload)
+  }, [onImageLoaded])
+
   return (
     <>
       <div
@@ -165,6 +172,11 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
           onChange={(e) => handleFiles(e.target.files)}
         />
       </div>
+
+      <PresetIconSlider
+        onIconSelected={handlePresetIcon}
+        selectedSvg={selectedPresetSvg}
+      />
 
       {jpegPending && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">

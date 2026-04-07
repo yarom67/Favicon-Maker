@@ -93,7 +93,13 @@ export function Editor({ state, onStateChange, onCommit }: EditorProps) {
     onStateChange({ scale: Math.max(0.25, Math.min(4, state.scale * delta)) })
   }, [state.scale, onStateChange])
 
-  if (!state.imageType || !imageEl) return null
+  if (!state.imageType) return null
+
+  if (!imageEl) {
+    return (
+      <div ref={containerRef} className="w-full aspect-square rounded-2xl overflow-hidden border border-slate-100 bg-slate-50 animate-pulse" />
+    )
+  }
 
   return (
     <div ref={containerRef} className="w-full aspect-square rounded-2xl overflow-hidden border border-slate-100 bg-slate-50">

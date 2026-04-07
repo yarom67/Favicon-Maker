@@ -4,6 +4,7 @@ import { UploadZone } from './components/UploadZone'
 import { Editor } from './components/Editor'
 import { Controls } from './components/Controls'
 import { ExportButton } from './components/ExportButton'
+import { PresetIconSlider } from './components/PresetIconSlider'
 import { BrowserTabPreview } from './components/previews/BrowserTabPreview'
 import { BookmarksPreview } from './components/previews/BookmarksPreview'
 import { MobileBrowserPreview } from './components/previews/MobileBrowserPreview'
@@ -116,6 +117,23 @@ export default function App() {
     if (replaceInputRef.current) replaceInputRef.current.value = ''
   }, [setState])
 
+  const handlePresetFromApp = useCallback((payload: {
+    imageType: 'svg'; imageDataUrl: null; svgString: string;
+    imgWidth: number; imgHeight: number; bgColor: ''
+  }) => {
+    setState({
+      imageType: payload.imageType,
+      imageDataUrl: null,
+      svgString: payload.svgString,
+      imgWidth: payload.imgWidth,
+      imgHeight: payload.imgHeight,
+      bgColor: '',
+      cropX: 0,
+      cropY: 0,
+      scale: 1,
+    })
+  }, [setState])
+
   const confirmReplaceJpeg = useCallback(() => {
     if (!replaceJpegPending) return
     setState({ imageType: 'jpeg', imageDataUrl: replaceJpegPending.dataUrl, svgString: null,
@@ -133,11 +151,16 @@ export default function App() {
         <>
           <button
             onClick={() => replaceInputRef.current?.click()}
-            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors font-medium self-start"
+            className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-slate-800 font-medium self-start
+                       border border-slate-200 hover:border-slate-300 rounded-full px-3 py-1.5 transition-all bg-white hover:bg-slate-50"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             Replace image
           </button>
+          <PresetIconSlider
+            onIconSelected={handlePresetFromApp}
+            selectedSvg={state.imageType === 'svg' ? state.svgString : null}
+          />
           <Editor
             state={state}
             onStateChange={setState}
@@ -195,12 +218,53 @@ export default function App() {
 
   const rightPanel = hasImage ? (
     <div className="flex flex-col gap-5">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wide font-display">Previews</span>
+        <span className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block" />
+          Live
+        </span>
+      </div>
       <BrowserTabPreview state={state} />
       <BookmarksPreview state={state} />
       <MobileBrowserPreview state={state} />
     </div>
   ) : (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col gap-5">
+      {/* Static output preview mockup */}
+      <div className="rounded-2xl bg-slate-50 border border-slate-100 p-5">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide font-display mb-4">What you&apos;ll get</p>
+        <div className="flex items-start gap-6">
+          {/* Browser tab mockup */}
+          <div className="flex-1 min-w-0">
+            <div className="bg-slate-100 rounded-xl p-2.5">
+              <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="flex items-center bg-slate-100 px-2 pt-1.5 gap-1">
+                  <div className="flex items-center gap-1.5 bg-white rounded-t-md px-2.5 py-1 text-[10px] text-slate-700 font-medium shadow-sm min-w-0 max-w-[140px]">
+                    <div className="w-3.5 h-3.5 rounded-sm flex-none bg-gradient-to-br from-orange-400 to-orange-500" />
+                    <span className="truncate">My Website</span>
+                  </div>
+                </div>
+                <div className="px-2.5 py-2 space-y-1.5">
+                  <div className="h-1.5 bg-slate-100 rounded w-3/4" />
+                  <div className="h-1.5 bg-slate-100 rounded w-1/2" />
+                </div>
+              </div>
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1.5 text-center">Browser tab</p>
+          </div>
+          {/* Mobile icon mockup */}
+          <div className="flex-none">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-500 shadow-md flex items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.9">
+                <path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+              </svg>
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1.5 text-center">Home screen</p>
+          </div>
+        </div>
+      </div>
+      {/* Feature grid */}
       <div className="flex-1 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50/60 border border-orange-100 p-8 flex flex-col justify-center">
         <h2 className="font-display font-bold text-slate-800 text-2xl mb-2">
           Your logo, every platform
@@ -285,10 +349,11 @@ export default function App() {
       </header>
 
       {/* Desktop layout */}
-      <div className="hidden md:flex h-[calc(100vh-65px)] max-w-5xl mx-auto border-x border-slate-100">
+      <div className="hidden md:flex h-[calc(100vh-65px)] max-w-7xl mx-auto border-x border-slate-100">
         {/* Left panel */}
-        <div className="w-[440px] flex-none border-r border-slate-100 overflow-hidden px-5 py-6 flex flex-col">
+        <div className="w-[440px] flex-none border-r border-slate-100 overflow-hidden px-5 py-6 flex flex-col relative">
           {leftPanel}
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent" />
         </div>
         {/* Right panel */}
         <div className="flex-1 flex flex-col overflow-hidden">

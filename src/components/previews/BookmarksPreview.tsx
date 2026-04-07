@@ -7,7 +7,6 @@ export function BookmarksPreview({ state }: { state: EditState }) {
 
   return (
     <div>
-      <p className="text-xs text-slate-400 font-medium mb-2 font-display uppercase tracking-wide">Bookmarks bar</p>
       <div className="bg-slate-100 rounded-2xl p-3">
         <div className="bg-white rounded-xl px-3 py-2 flex items-center gap-3 overflow-x-auto">
           {bookmarks.map((label, i) => (
