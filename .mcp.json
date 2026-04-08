@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "claude-flow": {
-      "command": "npx",
+      "command": "/Users/yaromganor/.npm-global/bin/ruflo",
       "args": [
-        "-y",
-        "@claude-flow/cli@latest",
         "mcp",
         "start"
       ],
@@ -16,7 +14,7 @@
         "CLAUDE_FLOW_MAX_AGENTS": "15",
         "CLAUDE_FLOW_MEMORY_BACKEND": "hybrid"
       },
-      "autoStart": false
+      "autoStart": true
     },
     "shadcn": {
       "command": "npx",
