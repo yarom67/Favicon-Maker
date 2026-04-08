@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'sonner'
 import type { EditState } from '../types'
 import { buildFaviconZip } from '../lib/zipBuilder'
 
@@ -8,7 +9,6 @@ interface ExportButtonProps {
 
 export function ExportButton({ state }: ExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false)
-  const [success, setSuccess] = useState(false)
   const disabled = !state.imageType || isExporting
 
   const handleExport = async () => {
@@ -16,8 +16,12 @@ export function ExportButton({ state }: ExportButtonProps) {
     setIsExporting(true)
     try {
       await buildFaviconZip(state)
-      setSuccess(true)
-      setTimeout(() => setSuccess(false), 2000)
+      toast.success('favicon-export.zip downloaded', {
+        description: 'All sizes ready — drop them in your project.',
+        duration: 4000,
+      })
+    } catch {
+      toast.error('Export failed', { description: 'Something went wrong. Please try again.' })
     } finally {
       setIsExporting(false)
     }
@@ -26,18 +30,18 @@ export function ExportButton({ state }: ExportButtonProps) {
   return (
     <>
       <span aria-live="polite" className="sr-only">
-        {isExporting ? 'Exporting favicon ZIP, please wait.' : success ? 'Download complete.' : ''}
+        {isExporting ? 'Exporting favicon ZIP, please wait.' : ''}
       </span>
       <button
         onClick={handleExport}
         disabled={disabled}
         aria-busy={isExporting}
         className={`
-          w-full py-4 rounded-2xl font-display font-semibold text-white text-base
-          transition-all duration-200 shadow-sm
+          w-full py-3.5 rounded-xl font-display font-bold text-white text-sm tracking-wide
+          transition-all duration-200
           ${disabled
-            ? 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-            : 'bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-orange-200 hover:shadow-orange-300 hover:shadow-md active:scale-[0.98]'
+            ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+            : 'bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600 shadow-md shadow-orange-200 hover:shadow-lg hover:shadow-orange-300 active:scale-[0.98]'
           }
         `}
       >
@@ -46,10 +50,15 @@ export function ExportButton({ state }: ExportButtonProps) {
             <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             Exporting…
           </span>
-        ) : success ? (
-          '✓ Downloaded!'
         ) : (
-          '↓ Export ZIP'
+          <span className="flex items-center justify-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Export ZIP
+          </span>
         )}
       </button>
     </>

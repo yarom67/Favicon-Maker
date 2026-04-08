@@ -1,6 +1,13 @@
 import React, { useRef, useState, useCallback } from 'react'
 import type { ImageType } from '../types'
 import { PresetIconSlider } from './PresetIconSlider'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog'
 
 interface ImageLoadedPayload {
   imageType: ImageType
@@ -31,12 +38,10 @@ function parseSvgDimensions(svgString: string): { width: number; height: number 
     const svg = doc.querySelector('svg')
     if (!svg) return { width: 512, height: 512 }
 
-    // Try width/height attributes first
     const w = parseFloat(svg.getAttribute('width') || '0')
     const h = parseFloat(svg.getAttribute('height') || '0')
     if (w > 0 && h > 0) return { width: w, height: h }
 
-    // Fall back to viewBox
     const viewBox = svg.getAttribute('viewBox')
     if (viewBox) {
       const parts = viewBox.trim().split(/[\s,]+/)
@@ -144,24 +149,29 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
         className={`
           flex flex-col items-center justify-center w-full cursor-pointer
           rounded-2xl border-2 border-dashed transition-all select-none
-          min-h-[220px] gap-3
+          min-h-[200px] gap-4
           ${isDragging
             ? 'border-orange-400 bg-orange-50'
-            : 'border-slate-200 bg-slate-50 hover:border-orange-300 hover:bg-orange-50/40'}
+            : 'border-slate-200 bg-slate-50/50 hover:border-orange-300 hover:bg-orange-50/30'}
         `}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-          <circle cx="8.5" cy="8.5" r="1.5"/>
-          <polyline points="21 15 16 10 5 21"/>
-        </svg>
+        {/* Upload icon */}
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${
+          isDragging ? 'bg-orange-100 text-orange-500' : 'bg-slate-100 text-slate-400'
+        }`}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
         <div className="text-center">
           <p className="font-display font-semibold text-slate-800 text-base">
             Drop your logo here
           </p>
           <p className="text-slate-400 text-sm mt-1">
             PNG, JPG, or SVG · or{' '}
-            <span className="text-orange-500 underline underline-offset-2">browse files</span>
+            <span className="text-orange-500 font-medium underline underline-offset-2">browse files</span>
           </p>
         </div>
         <input
@@ -178,43 +188,42 @@ export function UploadZone({ onImageLoaded }: UploadZoneProps) {
         selectedSvg={selectedPresetSvg}
       />
 
-      {jpegPending && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full">
-            <h3 className="font-display font-semibold text-slate-900 text-lg mb-2">
-              Choose a background color
-            </h3>
-            <p className="text-slate-500 text-sm mb-5">
+      {/* JPEG background color picker — shadcn Dialog */}
+      <Dialog open={!!jpegPending} onOpenChange={(open) => { if (!open) setJpegPending(null) }}>
+        <DialogContent className="max-w-sm rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="font-display text-slate-900">Choose a background color</DialogTitle>
+            <DialogDescription className="text-slate-500 text-sm leading-relaxed">
               Your image doesn&apos;t support transparency. Pick a background color before we continue.
-            </p>
-            <div className="flex items-center gap-3 mb-6">
-              <input
-                type="color"
-                value={bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                className="w-12 h-12 rounded-xl border border-slate-200 cursor-pointer"
-              />
-              <span className="text-slate-600 font-mono text-sm">{bgColor}</span>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setJpegPending(null)}
-                className="flex-1 py-3 rounded-xl font-display font-semibold text-slate-500 text-sm bg-slate-100 hover:bg-slate-200 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmJpegBg}
-                className="flex-1 py-3 rounded-xl font-display font-semibold text-white text-sm
-                           bg-gradient-to-r from-orange-400 to-orange-500
-                           hover:from-orange-500 hover:to-orange-600 transition-all"
-              >
-                Continue
-              </button>
-            </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center gap-3 my-2">
+            <input
+              type="color"
+              value={bgColor}
+              onChange={(e) => setBgColor(e.target.value)}
+              className="w-12 h-12 rounded-xl border border-slate-200 cursor-pointer"
+            />
+            <span className="text-slate-500 font-mono text-sm">{bgColor}</span>
           </div>
-        </div>
-      )}
+          <div className="flex gap-3 mt-1">
+            <button
+              onClick={() => setJpegPending(null)}
+              className="flex-1 py-2.5 rounded-xl font-display font-semibold text-slate-500 text-sm bg-slate-100 hover:bg-slate-200 transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmJpegBg}
+              className="flex-1 py-2.5 rounded-xl font-display font-semibold text-white text-sm
+                         bg-gradient-to-r from-orange-400 to-orange-500
+                         hover:from-orange-500 hover:to-orange-600 transition-all"
+            >
+              Continue
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
